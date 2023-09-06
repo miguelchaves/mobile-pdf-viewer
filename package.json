@@ -21,9 +21,6 @@
     "url": "https://github.com/miguelchaves/mobile-pdf-viewer/issues"
   },
   "homepage": "https://github.com/miguelchaves/mobile-pdf-viewer#readme",
-  "dependencies": {
-    "pdfjs-dist": "^3.10.111"
-  },
   "devDependencies": {
     "@babel/core": "^7.22.15",
     "@babel/preset-env": "^7.22.15",
@@ -33,7 +30,9 @@
     "copy-webpack-plugin": "^11.0.0",
     "css-loader": "^6.8.1",
     "css-minimizer-webpack-plugin": "^5.0.1",
+    "firebase": "^10.3.1",
     "html-webpack-plugin": "^5.5.3",
+    "pdfjs-dist": "^3.10.111",
     "postcss": "^8.4.29",
     "postcss-loader": "^7.3.3",
     "prettier": "^3.0.3",
