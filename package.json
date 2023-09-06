@@ -1,0 +1,45 @@
+{
+  "name": "my-webpack-project",
+  "version": "1.0.0",
+  "description": "My webpack project",
+  "main": "index.js",
+  "scripts": {
+    "build": "webpack --mode=production --node-env=production",
+    "serve": "webpack serve",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build:dev": "webpack --mode=development",
+    "build:prod": "webpack --mode=production --node-env=production",
+    "watch": "webpack --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/miguelchaves/mobile-pdf-viewer.git"
+  },
+  "author": "Miguel González de Chaves",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/miguelchaves/mobile-pdf-viewer/issues"
+  },
+  "homepage": "https://github.com/miguelchaves/mobile-pdf-viewer#readme",
+  "dependencies": {
+    "pdfjs-dist": "^3.10.111"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.22.15",
+    "@babel/preset-env": "^7.22.15",
+    "@webpack-cli/generators": "^3.0.7",
+    "autoprefixer": "^10.4.15",
+    "babel-loader": "^9.1.3",
+    "copy-webpack-plugin": "^11.0.0",
+    "css-loader": "^6.8.1",
+    "css-minimizer-webpack-plugin": "^5.0.1",
+    "html-webpack-plugin": "^5.5.3",
+    "postcss": "^8.4.29",
+    "postcss-loader": "^7.3.3",
+    "prettier": "^3.0.3",
+    "style-loader": "^3.3.3",
+    "webpack": "^5.88.2",
+    "webpack-cli": "^5.1.4",
+    "webpack-dev-server": "^4.15.1"
+  }
+}
