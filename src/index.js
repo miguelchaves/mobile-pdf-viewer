@@ -25,14 +25,17 @@ const TEXT_LAYER_MODE = 0; // DISABLE
 const MAX_IMAGE_SIZE = 1024 * 1024;
 const CMAP_URL = "assets/cmaps/";
 const CMAP_PACKED = true;
-
-window.pdfjsLib.GlobalWorkerOptions.workerSrc = "assets/pdf.worker.js";
-
 const DEFAULT_URL = "assets/compressed.tracemonkey-pldi-09.pdf";
 const DEFAULT_SCALE_DELTA = 1.1;
 const MIN_SCALE = 0.25;
 const MAX_SCALE = 10.0;
 const DEFAULT_SCALE_VALUE = "auto";
+const params = new Proxy(new URLSearchParams(window.location.search), {
+  get: (searchParams, prop) => searchParams.get(prop),
+});
+
+window.pdfjsLib.GlobalWorkerOptions.workerSrc = "assets/pdf.worker.js";
+
 
 const PDFViewerApplication = {
   pdfLoadingTask: null,
@@ -343,6 +346,10 @@ const PDFViewerApplication = {
     } while (--ticks && newScale > MIN_SCALE);
     this.pdfViewer.currentScaleValue = newScale;
   },
+  
+  download: function downloadPdf() {
+    window.top.open(this.url);
+  },
 
   initUI: function pdfViewInitUI() {
     const eventBus = new pdfjsViewer.EventBus();
@@ -386,6 +393,10 @@ const PDFViewerApplication = {
 
     document.getElementById("zoomOut").addEventListener("click", function () {
       PDFViewerApplication.zoomOut();
+    });
+
+    document.getElementById("download").addEventListener("click", function () {
+      PDFViewerApplication.download();
     });
 
     document
@@ -446,6 +457,6 @@ const animationStarted = new Promise(function (resolve) {
 // We need to delay opening until all HTML is loaded.
 animationStarted.then(function () {
   PDFViewerApplication.open({
-    url: DEFAULT_URL,
+    url: params.url || DEFAULT_URL,
   });
 });

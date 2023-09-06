@@ -68,6 +68,7 @@ section {
 }
 
 footer {
+  display: flex;
   background-image: url(images/toolbar_background.png);
   height: 4rem;
   position: absolute;
@@ -76,12 +77,14 @@ footer {
   right: 0;
   z-index: 1;
   box-shadow: 0 -0.2rem 0.5rem rgba(50, 50, 50, 0.75);
+  space;
 }
 
 .toolbarButton {
   display: block;
+  width: 25px;
   padding: 0;
-  margin: 0;
+  margin: auto;
   border-width: 0;
   background-position: center center;
   background-repeat: no-repeat;
@@ -89,8 +92,6 @@ footer {
 }
 
 .toolbarButton.pageUp {
-  position: absolute;
-  width: 18%;
   height: 100%;
   left: 0;
   background-image: url(images/icon_previous_page.png);
@@ -98,20 +99,15 @@ footer {
 }
 
 .toolbarButton.pageDown {
-  position: absolute;
-  width: 18%;
   height: 100%;
-  left: 18%;
   background-image: url(images/icon_next_page.png);
   background-size: 2rem;
 }
 
 #pageNumber {
   -moz-appearance: textfield; /* hides the spinner in moz */
-  position: absolute;
   width: 28%;
   height: 100%;
-  left: 36%;
   text-align: center;
   border: 0;
   background-color: rgba(0, 0, 0, 0);
@@ -125,20 +121,20 @@ footer {
 }
 
 .toolbarButton.zoomOut {
-  position: absolute;
-  width: 18%;
   height: 100%;
-  left: 64%;
   background-image: url(images/icon_zoom_out.png);
   background-size: 2.4rem;
 }
 
 .toolbarButton.zoomIn {
-  position: absolute;
-  width: 18%;
   height: 100%;
-  left: 82%;
   background-image: url(images/icon_zoom_in.png);
+  background-size: 2.4rem;
+}
+
+.toolbarButton.download {
+  height: 100%;
+  background-image: url(images/icon_download.png);
   background-size: 2.4rem;
 }
 
