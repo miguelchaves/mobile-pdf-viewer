@@ -23,8 +23,6 @@ if (!window.pdfjsLib?.getDocument || !window.pdfjsViewer?.PDFViewer) {
 const USE_ONLY_CSS_ZOOM = true;
 const TEXT_LAYER_MODE = 0; // DISABLE
 const MAX_IMAGE_SIZE = 1024 * 1024;
-const CMAP_URL = "assets/cmaps/";
-const CMAP_PACKED = true;
 const DEFAULT_URL = "assets/pdf-mobile-viewer.pdf";
 const DEFAULT_SCALE_DELTA = 1.1;
 const MIN_SCALE = 0.25;
@@ -121,8 +119,7 @@ const PDFViewerApplication = {
     const loadingTask = pdfjsLib.getDocument({
       url,
       maxImageSize: MAX_IMAGE_SIZE,
-      cMapUrl: CMAP_URL,
-      cMapPacked: CMAP_PACKED,
+      cMapPacked: false,
     });
     this.pdfLoadingTask = loadingTask;
 
