@@ -11,26 +11,24 @@ La aplicación recibe los siguientes parámetros de entrada por query-params:
     * `download`
     * `error`
 
-## Install
+## Instalación
 
 ```
 npm install
 ```
 
-## Build
+## Build / Contrucción
 
 This project has been created using **webpack-cli**, you can now run
 
 ```
 npm run build
 ```
+## Code
 
-or
+Para más información, visita el repositorio de GitHub:
 
-```
-yarn build
-```
-
+    https://github.com/miguelchaves/mobile-pdf-viewer
 
 
 
