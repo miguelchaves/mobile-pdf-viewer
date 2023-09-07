@@ -37,7 +37,7 @@ const selectors = {
   downloadPopup: '#download-popup'
 };
 
-window.pdfjsLib.GlobalWorkerOptions.workerSrc = "assets/pdf.worker.js";
+window.pdfjsLib.GlobalWorkerOptions.workerSrc = "assets/pdf.worker.min.js";
 
 class L10n {
   _lang;

@@ -29,22 +29,18 @@ const config = {
         new HtmlWebpackPlugin({
             template: 'index.html',
         }),
+        // Add your plugins here
+        // Learn more about plugins from https://webpack.js.org/configuration/plugins/
         new CopyWebpackPlugin({
             patterns: [
                 { from: 'assets', to: 'assets' },
                 { from: 'node_modules/pdfjs-dist/web/pdf_viewer.css', to: 'assets/pdf_viewer.css' },
-                { from: 'node_modules/pdfjs-dist/build/pdf.js', to: 'assets/pdf.js' },
+                { from: 'node_modules/pdfjs-dist/build/pdf.min.js', to: 'assets/pdf.min.js' },
                 { from: 'node_modules/pdfjs-dist/web/pdf_viewer.js', to: 'assets/pdf_viewer.js' },
-                { from: 'node_modules/pdfjs-dist/build/pdf.worker.js', to: 'assets/pdf.worker.js' },
+                { from: 'node_modules/pdfjs-dist/build/pdf.worker.min.js', to: 'assets/pdf.worker.min.js' },
                 { from: 'node_modules/pdfjs-dist/cmaps', to: 'assets/cmaps' },
-                // { from: 'node_modules/pdfjs-dist/', to: 'assets/pdfjs-dist' },
             ]
-
-            // http://localhost:9000/assets/pdfjs-dist/build/pdf.worker.js
         })
-
-        // Add your plugins here
-        // Learn more about plugins from https://webpack.js.org/configuration/plugins/
     ],
     module: {
         rules: [
