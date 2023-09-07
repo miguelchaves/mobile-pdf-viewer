@@ -20,7 +20,6 @@ if (!window.pdfjsLib?.getDocument || !window.pdfjsViewer?.PDFViewer) {
   throw new Error('Please build the pdfjs-dist library using\n `gulp dist-install`');
 }
 
-const USE_ONLY_CSS_ZOOM = true;
 const TEXT_LAYER_MODE = 0; // DISABLE
 const MAX_IMAGE_SIZE = 1024 * 1024;
 const DEFAULT_URL = "assets/pdf-mobile-viewer.pdf";
@@ -416,7 +415,6 @@ const PDFViewerApplication = {
       eventBus,
       linkService,
       l10n: this.l10n,
-      useOnlyCssZoom: USE_ONLY_CSS_ZOOM,
       textLayerMode: TEXT_LAYER_MODE,
     });
     this.pdfViewer = pdfViewer;

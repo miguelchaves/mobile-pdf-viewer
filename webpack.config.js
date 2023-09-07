@@ -37,6 +37,7 @@ const config = {
                 { from: 'node_modules/pdfjs-dist/web/pdf_viewer.css', to: 'assets/pdf_viewer.css' },
                 { from: 'node_modules/pdfjs-dist/build/pdf.min.js', to: 'assets/pdf.min.js' },
                 { from: 'node_modules/pdfjs-dist/web/pdf_viewer.js', to: 'assets/pdf_viewer.js' },
+                { from: 'node_modules/pdfjs-dist/web/pdf_viewer.js.map', to: 'assets/pdf_viewer.js.map' },
                 { from: 'node_modules/pdfjs-dist/build/pdf.worker.min.js', to: 'assets/pdf.worker.min.js' },
                 // { from: 'node_modules/pdfjs-dist/cmaps', to: 'assets/cmaps' },
             ]
