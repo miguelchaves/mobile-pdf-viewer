@@ -1,0 +1,36 @@
+{
+    "es": {
+        "close": "Cerrar",
+        "download": "Descargar",
+        "download_popup_text": "¿Tienes problemas para ver el documento?",
+        "error_file": "Archivo: {{file}}",
+        "error_line": "Línea: {{line}}",
+        "error_message": "Mensaje: {{message}}",
+        "error_version_info": "PDF.js v{{version}} (build: {{build}})",
+        "invalid_file_error": "Archivo PDF inválido o corrupto.",
+        "less_info": "Menos información",
+        "loading_error": "Se produjo un error al cargar el PDF..",
+        "missing_file_error": "Falta el archivo PDF.",
+        "more_info": "Más información",
+        "unexpected_response_error": "Respuesta inesperada del servidor.",
+        "zoom_in": "Ampliar zoom",
+        "zoom_out": "Disminuir zoom"
+    },
+    "en": {
+        "close": "Close",
+        "download": "Download",
+        "download_popup_text": "Are you having trouble viewing the document?",
+        "error_file": "File: {{file}}",
+        "error_line": "Line: {{line}}",
+        "error_message": "Message: {{message}}",
+        "error_version_info": "PDF.js v{{version}} (build: {{build}})",
+        "invalid_file_error": "Invalid or corrupted PDF file.",
+        "less_info": "Less Information",
+        "loading_error": "An error occurred while loading the PDF.",
+        "missing_file_error": "Missing PDF file.",
+        "more_info": "More Information",
+        "unexpected_response_error": "Unexpected server response.",
+        "zoom_in": "Zoom in",
+        "zoom_out": "Zoom out"
+    }
+}

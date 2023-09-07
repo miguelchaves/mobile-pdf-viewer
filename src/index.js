@@ -39,6 +39,40 @@ const selectors = {
 
 window.pdfjsLib.GlobalWorkerOptions.workerSrc = "assets/pdf.worker.js";
 
+class L10n {
+  _lang;
+  _languages;
+  
+  constructor(languages, langCode = 'es') {
+    this._languages = languages;
+    this._lang = this._languages?.[langCode] ? langCode : 'es';
+  }
+  setLanguage(langCode, dictionary = null) {
+    if (dictionary) {
+      this._languages[langCode] = dictionary;
+    }
+    this._lang = this._languages?.[langCode] ? langCode : 'es';
+  }
+  getLanguage() {
+    return this._lang;
+  }
+  getDictionary() {
+    return this._languages?.[this._lang] ?? {};
+  }
+  get(path, args, fallbackText = '') {
+    const resolvePath = (object, path, defaultValue) => path
+      .split('.')
+      .reduce((o, p) => o ? o[p] : defaultValue, object)
+    const texts = this.getDictionary();
+    const text = resolvePath(texts, path) || '';
+    if (args) {
+      return Object.entries(args)
+        .reduce((text, [key, value]) => text.replaceAll(`{{${key}}}`, value), text);
+    }
+
+    return text;
+  }
+}
 
 const PDFViewerApplication = {
   pdfLoadingTask: null,
@@ -47,10 +81,26 @@ const PDFViewerApplication = {
   pdfHistory: null,
   pdfLinkService: null,
   eventBus: null,
+  l10n: null,
 
-  init(params) {
+  async init(params) {
+    await this.loadLanguages(params.lang);
     this.showDownloadPopup(params.showDownloadPopup);
     this.open(params);
+  },
+
+  async loadLanguages(lang = 'es') {
+    const languagesPath = document.querySelector('link[type="application/l10n"]').href;
+    const response = await fetch(languagesPath);
+    this.l10n = new L10n(await response.json(), lang);
+
+    document.querySelectorAll('[data-text]').forEach(dataText => {
+      dataText.textContent = this.l10n.get(dataText.dataset.text);
+    });
+
+    document.querySelectorAll('[data-title-text]').forEach(dataTitleText => {
+      dataTitleText.title = this.l10n.get(dataTitleText.dataset.titleText);
+    });
   },
 
   /**
@@ -58,19 +108,13 @@ const PDFViewerApplication = {
    * @returns {Promise} - Returns the promise, which is resolved when document
    *                      is opened.
    */
-  open(params) {
+  async open(params) {
     if (this.pdfLoadingTask) {
       // We need to destroy already opened document
-      return this.close().then(
-        function () {
-          // ... and repeat the open() call.
-          return this.open(params);
-        }.bind(this)
-      );
+      await this.close();
     }
 
     const url = params.url;
-    const self = this;
     this.setTitleUsingUrl(url);
 
     // Loading document.
@@ -82,62 +126,58 @@ const PDFViewerApplication = {
     });
     this.pdfLoadingTask = loadingTask;
 
-    loadingTask.onProgress = function (progressData) {
-      self.progress(progressData.loaded / progressData.total);
+    loadingTask.onProgress = (progressData) => {
+      this.progress(progressData.loaded / progressData.total);
     };
 
-    return loadingTask.promise.then(
-      function (pdfDocument) {
-        // Document loaded, specifying document for the viewer.
-        self.pdfDocument = pdfDocument;
-        self.pdfViewer.setDocument(pdfDocument);
-        self.pdfLinkService.setDocument(pdfDocument);
-        self.pdfHistory.initialize({
-          fingerprint: pdfDocument.fingerprints[0],
-        });
+    try {
+      const pdfDocument = await loadingTask.promise;
+      // Document loaded, specifying document for the viewer.
+      this.pdfDocument = pdfDocument;
+      this.pdfViewer.setDocument(pdfDocument);
+      this.pdfLinkService.setDocument(pdfDocument);
+      this.pdfHistory.initialize({
+        fingerprint: pdfDocument.fingerprints[0],
+      });
 
-        self.loadingBar.hide();
-        self.setTitleUsingMetadata(pdfDocument);
-      },
-      function (exception) {
-        const message = exception && exception.message;
-        const l10n = self.l10n;
-        let loadingErrorMessage;
+      this.loadingBar.hide();
+      this.setTitleUsingMetadata(pdfDocument);
+    } catch (exception) {
+      const message = exception && exception.message;
+      const l10n = this.l10n;
+      let loadingErrorMessage;
 
-        if (exception instanceof pdfjsLib.InvalidPDFException) {
-          // change error message also for other builds
-          loadingErrorMessage = l10n.get(
-            "invalid_file_error",
-            null,
-            "Invalid or corrupted PDF file."
-          );
-        } else if (exception instanceof pdfjsLib.MissingPDFException) {
-          // special message for missing PDFs
-          loadingErrorMessage = l10n.get(
-            "missing_file_error",
-            null,
-            "Missing PDF file."
-          );
-        } else if (exception instanceof pdfjsLib.UnexpectedResponseException) {
-          loadingErrorMessage = l10n.get(
-            "unexpected_response_error",
-            null,
-            "Unexpected server response."
-          );
-        } else {
-          loadingErrorMessage = l10n.get(
-            "loading_error",
-            null,
-            "An error occurred while loading the PDF."
-          );
-        }
-
-        loadingErrorMessage.then(function (msg) {
-          self.error(msg, { message });
-        });
-        self.loadingBar.hide();
+      if (exception instanceof pdfjsLib.InvalidPDFException) {
+        // change error message also for other builds
+        loadingErrorMessage = l10n.get(
+          "invalid_file_error",
+          null,
+          "Invalid or corrupted PDF file."
+        );
+      } else if (exception instanceof pdfjsLib.MissingPDFException) {
+        // special message for missing PDFs
+        loadingErrorMessage = l10n.get(
+          "missing_file_error",
+          null,
+          "Missing PDF file."
+        );
+      } else if (exception instanceof pdfjsLib.UnexpectedResponseException) {
+        loadingErrorMessage = l10n.get(
+          "unexpected_response_error",
+          null,
+          "Unexpected server response."
+        );
+      } else {
+        loadingErrorMessage = l10n.get(
+          "loading_error",
+          null,
+          "An error occurred while loading the PDF."
+        );
       }
-    );
+
+      this.error(loadingErrorMessage, { message });
+      this.loadingBar.hide();
+    }
   },
 
   /**
@@ -191,55 +231,53 @@ const PDFViewerApplication = {
     this.setTitle(title);
   },
 
-  setTitleUsingMetadata(pdfDocument) {
-    const self = this;
-    pdfDocument.getMetadata().then(function (data) {
-      const info = data.info,
-        metadata = data.metadata;
-      self.documentInfo = info;
-      self.metadata = metadata;
+  async setTitleUsingMetadata(pdfDocument) {
+    const data = await pdfDocument.getMetadata();
+    const info = data.info,
+      metadata = data.metadata;
+    this.documentInfo = info;
+    this.metadata = metadata;
 
-      // Provides some basic debug information
-      console.log(
-        "PDF " +
-          pdfDocument.fingerprints[0] +
-          " [" +
-          info.PDFFormatVersion +
-          " " +
-          (info.Producer || "-").trim() +
-          " / " +
-          (info.Creator || "-").trim() +
-          "]" +
-          " (PDF.js: " +
-          (pdfjsLib.version || "-") +
-          ")"
-      );
+    // Provides some basic debug information
+    console.log(
+      "PDF " +
+        pdfDocument.fingerprints[0] +
+        " [" +
+        info.PDFFormatVersion +
+        " " +
+        (info.Producer || "-").trim() +
+        " / " +
+        (info.Creator || "-").trim() +
+        "]" +
+        " (PDF.js: " +
+        (pdfjsLib.version || "-") +
+        ")"
+    );
 
-      let pdfTitle;
-      if (metadata && metadata.has("dc:title")) {
-        const title = metadata.get("dc:title");
-        // Ghostscript sometimes returns 'Untitled', so prevent setting the
-        // title to 'Untitled.
-        if (title !== "Untitled") {
-          pdfTitle = title;
-        }
+    let pdfTitle;
+    if (metadata && metadata.has("dc:title")) {
+      const title = metadata.get("dc:title");
+      // Ghostscript sometimes returns 'Untitled', so prevent setting the
+      // title to 'Untitled.
+      if (title !== "Untitled") {
+        pdfTitle = title;
       }
+    }
 
-      if (!pdfTitle && info && info.Title) {
-        pdfTitle = info.Title;
-      }
+    if (!pdfTitle && info && info.Title) {
+      pdfTitle = info.Title;
+    }
 
-      if (pdfTitle) {
-        self.setTitle(pdfTitle + " - " + document.title);
-      }
-    });
+    if (pdfTitle) {
+      this.setTitle(pdfTitle + " - " + document.title);
+    }
   },
 
   setTitle: function pdfViewSetTitle(title) {
     document.title = title;
   },
 
-  error: function pdfViewError(message, moreInfo) {
+  error: async function pdfViewError(message, moreInfo) {
     const l10n = this.l10n;
     const moreInfoText = [
       l10n.get(
@@ -310,9 +348,8 @@ const PDFViewerApplication = {
     };
     moreInfoButton.hidden = false;
     lessInfoButton.hidden = true;
-    Promise.all(moreInfoText).then(function (parts) {
-      errorMoreInfo.value = parts.join("\n");
-    });
+    const parts = await Promise.all(moreInfoText);
+    errorMoreInfo.value = parts.join("\n");
   },
 
   progress: function pdfViewProgress(level) {
@@ -376,7 +413,6 @@ const PDFViewerApplication = {
     });
     this.pdfLinkService = linkService;
 
-    this.l10n = pdfjsViewer.NullL10n;
     const container = document.getElementById("viewerContainer");
     const pdfViewer = new pdfjsViewer.PDFViewer({
       container,
@@ -480,6 +516,7 @@ animationStarted.then(function () {
 
   PDFViewerApplication.init({
     url: params.url || DEFAULT_URL,
-    showDownloadPopup: params.popup !== 'false'
+    showDownloadPopup: params.popup !== 'false',
+    lang: params.lang || navigator.language.split('-')[0]
   });
 });

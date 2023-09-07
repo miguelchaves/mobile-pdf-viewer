@@ -23,6 +23,7 @@ limitations under the License.
 
     <link rel="stylesheet" href="./assets/pdf_viewer.css">
     <link rel="stylesheet" type="text/css" href="./assets/viewer.css">
+    <link type="application/l10n" href="./assets/locales.json">
 
     <script src="./assets/pdf.js"></script>
     <script src="./assets/pdf_viewer.js"></script>
@@ -30,10 +31,10 @@ limitations under the License.
 
   <body>
     <div id="download-popup" class="download-popup" hidden="true">
-      <span>¿Tienes problemas para ver el documento?</span>
+      <span data-text="download_popup_text">¿Tienes problemas para ver el documento?</span>
       <div class="actions">
-        <button data-action="download">Descargar</button>
-        <button data-action="close-popup" class="close">Cerrar</button>
+        <button data-action="download" data-text="download">Descargar</button>
+        <button data-action="close-popup" data-text="close" class="close">Cerrar</button>
       </div>
     </div>
     <div id="viewerContainer">
@@ -48,15 +49,15 @@ limitations under the License.
     <div id="errorWrapper" hidden="true">
       <div id="errorMessageLeft">
         <span id="errorMessage"></span>
-        <button id="errorShowMore">
-          More Information
+        <button id="errorShowMore" data-text="more_info">
+          Más información
         </button>
-        <button id="errorShowLess">
-          Less Information
+        <button id="errorShowLess" data-text="less_info">
+          Menos información
         </button>
       </div>
       <div id="errorMessageRight">
-        <button id="errorClose">
+        <button id="errorClose" data-text="close">
           Close
         </button>
       </div>
@@ -70,9 +71,9 @@ limitations under the License.
 
       <input type="number" id="pageNumber" class="toolbarField pageNumber" value="1" size="4" min="1">
 
-      <button class="toolbarButton zoomOut" title="Zoom Out" id="zoomOut"></button>
-      <button class="toolbarButton zoomIn" title="Zoom In" id="zoomIn"></button>
-      <button class="toolbarButton download" title="Download" data-action="download"></button>
+      <button class="toolbarButton zoomOut" data-title-text="zoom_out" title="Zoom Out" id="zoomOut"></button>
+      <button class="toolbarButton zoomIn" data-title-text="zoom_in" title="Zoom In" id="zoomIn"></button>
+      <button class="toolbarButton download" data-title-text="download" title="Download" data-action="download"></button>
     </footer>
   </body>
 </html>
