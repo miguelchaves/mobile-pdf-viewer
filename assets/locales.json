@@ -12,6 +12,8 @@
         "loading_error": "Se produjo un error al cargar el PDF..",
         "missing_file_error": "Falta el archivo PDF.",
         "more_info": "Más información",
+        "next_page": "Página siguiente",
+        "prev_page": "Página anterior",
         "unexpected_response_error": "Respuesta inesperada del servidor.",
         "zoom_in": "Ampliar zoom",
         "zoom_out": "Disminuir zoom"
@@ -29,6 +31,8 @@
         "loading_error": "An error occurred while loading the PDF.",
         "missing_file_error": "Missing PDF file.",
         "more_info": "More Information",
+        "next_page": "Next Page",
+        "prev_page": "Previous Page",
         "unexpected_response_error": "Unexpected server response.",
         "zoom_in": "Zoom in",
         "zoom_out": "Zoom out"
