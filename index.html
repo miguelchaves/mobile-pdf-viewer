@@ -17,7 +17,7 @@ limitations under the License.
 <html dir="ltr">
   <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui, viewport-fit=cover">
 
     <title>PDF viewer</title>
 
@@ -29,6 +29,13 @@ limitations under the License.
   </head>
 
   <body>
+    <div id="download-popup" class="download-popup" hidden="true">
+      <span>¿Tienes problemas para ver el documento?</span>
+      <div class="actions">
+        <button data-action="download">Descargar</button>
+        <button data-action="close-popup" class="close">Cerrar</button>
+      </div>
+    </div>
     <div id="viewerContainer">
       <div id="viewer" class="pdfViewer"></div>
     </div>
@@ -65,7 +72,7 @@ limitations under the License.
 
       <button class="toolbarButton zoomOut" title="Zoom Out" id="zoomOut"></button>
       <button class="toolbarButton zoomIn" title="Zoom In" id="zoomIn"></button>
-      <button class="toolbarButton download" title="Download" id="download"></button>
+      <button class="toolbarButton download" title="Download" data-action="download"></button>
     </footer>
   </body>
 </html>

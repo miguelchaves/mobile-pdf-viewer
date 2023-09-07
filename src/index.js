@@ -33,6 +33,9 @@ const DEFAULT_SCALE_VALUE = "auto";
 const params = new Proxy(new URLSearchParams(window.location.search), {
   get: (searchParams, prop) => searchParams.get(prop),
 });
+const selectors = {
+  downloadPopup: '#download-popup'
+};
 
 window.pdfjsLib.GlobalWorkerOptions.workerSrc = "assets/pdf.worker.js";
 
@@ -44,6 +47,11 @@ const PDFViewerApplication = {
   pdfHistory: null,
   pdfLinkService: null,
   eventBus: null,
+
+  init(params) {
+    this.showDownloadPopup(params.showDownloadPopup);
+    this.open(params);
+  },
 
   /**
    * Opens PDF document specified by URL.
@@ -351,6 +359,14 @@ const PDFViewerApplication = {
     window.top.open(this.url);
   },
 
+  showDownloadPopup(show = true) {
+    document.querySelector(selectors.downloadPopup).hidden = !show;
+  },
+
+  closeDownloadPopup: function closeDownloadPopup() {
+    this.showDownloadPopup(false);
+  },
+
   initUI: function pdfViewInitUI() {
     const eventBus = new pdfjsViewer.EventBus();
     this.eventBus = eventBus;
@@ -395,8 +411,13 @@ const PDFViewerApplication = {
       PDFViewerApplication.zoomOut();
     });
 
-    document.getElementById("download").addEventListener("click", function () {
+    const downloadButtons = document.querySelectorAll('[data-action="download"]');
+    downloadButtons.forEach(downloadBtn => downloadBtn.addEventListener("click", function () {
       PDFViewerApplication.download();
+    }));
+
+    document.querySelector('[data-action="close-popup"]').addEventListener("click", function () {
+      PDFViewerApplication.closeDownloadPopup();
     });
 
     document
@@ -456,7 +477,9 @@ const animationStarted = new Promise(function (resolve) {
 
 // We need to delay opening until all HTML is loaded.
 animationStarted.then(function () {
-  PDFViewerApplication.open({
+
+  PDFViewerApplication.init({
     url: params.url || DEFAULT_URL,
+    showDownloadPopup: params.popup !== 'false'
   });
 });

@@ -46,6 +46,61 @@ header h1 {
   white-space: nowrap;
 }
 
+.download-popup {
+  position: absolute;
+  bottom: 43px;
+  z-index: 50;
+  color: black;
+  background-color: rgb(172 208 240 / 80%);
+  padding: 3px;
+  width: 94%;
+  left: 3%;
+  margin: auto;
+  font-size: 12px;
+  text-align: center;
+  text-overflow: ellipsis;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 0 2px #00000073;
+}
+
+.download-popup .actions {
+  display: flex;
+  align-items: flex-start;
+}
+
+.download-popup button {
+  margin: 0 3px;
+  color: #fff;
+  text-align: center;
+  max-width: 100%;
+  line-height: 24px;
+  border-radius: 1px;
+  padding: 0 3px;
+  display: inline-block;
+  border: none;
+  cursor: pointer;
+  background-color: #1973b8;
+}
+
+.download-popup button.close {
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-color: rgba(0, 0, 0, 0);
+  background-image: url(images/close.png);
+  background-color: transparent;
+  background-size: contain;
+  display: block;
+  width: 20px;
+  line-height: 20px;
+  padding: 0;
+  margin-left: 10px;
+  margin-right: 0;
+  border-width: 0;
+  font-size: 0;
+}
+
 body {
   background: url(images/document_bg.png);
   color: rgba(255, 255, 255, 1);
