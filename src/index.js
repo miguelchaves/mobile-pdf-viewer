@@ -31,7 +31,21 @@ const params = new Proxy(new URLSearchParams(window.location.search), {
   get: (searchParams, prop) => searchParams.get(prop),
 });
 const selectors = {
-  downloadPopup: '#download-popup'
+  viewer: '#viewer',
+  viewerContainer: '#viewerContainer',
+  downloadPopup: '#download-popup',
+  errorWrapper: '#errorWrapper',
+  loadingBar: '#loadingBar',
+  errorMessage: '#errorMessage',
+  errorClose: '#errorClose',
+  errorMoreInfo: '#errorMoreInfo',
+  errorShowMore: '#errorShowMore',
+  errorShowLess: '#errorShowLess',
+  previous: '#previous',
+  next: '#next',
+  zoomIn: '#zoomIn',
+  zoomOut: '#zoomOut',
+  pageNumber: '#pageNumber',
 };
 
 window.pdfjsLib.GlobalWorkerOptions.workerSrc = "assets/pdf.worker.min.js";
@@ -182,7 +196,7 @@ const PDFViewerApplication = {
    *                      destruction is completed.
    */
   close() {
-    const errorWrapper = document.getElementById("errorWrapper");
+    const errorWrapper = document.querySelector(selectors.errorWrapper);
     errorWrapper.hidden = true;
 
     if (!this.pdfLoadingTask) {
@@ -207,7 +221,7 @@ const PDFViewerApplication = {
   },
 
   get loadingBar() {
-    const bar = document.getElementById("loadingBar");
+    const bar = document.querySelector(selectors.loadingBar);
     return pdfjsLib.shadow(
       this,
       "loadingBar",
@@ -317,20 +331,20 @@ const PDFViewerApplication = {
       }
     }
 
-    const errorWrapper = document.getElementById("errorWrapper");
+    const errorWrapper = document.querySelector(selectors.errorWrapper);
     errorWrapper.hidden = false;
 
-    const errorMessage = document.getElementById("errorMessage");
+    const errorMessage = document.querySelector(selectors.errorMessage);
     errorMessage.textContent = message;
 
-    const closeButton = document.getElementById("errorClose");
+    const closeButton = document.querySelector(selectors.errorClose);
     closeButton.onclick = function () {
       errorWrapper.hidden = true;
     };
 
-    const errorMoreInfo = document.getElementById("errorMoreInfo");
-    const moreInfoButton = document.getElementById("errorShowMore");
-    const lessInfoButton = document.getElementById("errorShowLess");
+    const errorMoreInfo = document.querySelector(selectors.errorMoreInfo);
+    const moreInfoButton = document.querySelector(selectors.errorShowMore);
+    const lessInfoButton = document.querySelector(selectors.errorShowLess);
     moreInfoButton.onclick = function () {
       errorMoreInfo.hidden = false;
       moreInfoButton.hidden = true;
@@ -409,7 +423,7 @@ const PDFViewerApplication = {
     });
     this.pdfLinkService = linkService;
 
-    const container = document.getElementById("viewerContainer");
+    const container = document.querSelector(selectors.viewerContainer);
     const pdfViewer = new pdfjsViewer.PDFViewer({
       container,
       eventBus,
@@ -426,19 +440,19 @@ const PDFViewerApplication = {
     });
     linkService.setHistory(this.pdfHistory);
 
-    document.getElementById("previous").addEventListener("click", function () {
+    document.querySelector(selectors.previous).addEventListener("click", function () {
       PDFViewerApplication.page--;
     });
 
-    document.getElementById("next").addEventListener("click", function () {
+    document.querySelector(selectors.next).addEventListener("click", function () {
       PDFViewerApplication.page++;
     });
 
-    document.getElementById("zoomIn").addEventListener("click", function () {
+    document.querySelector(selectors.zoomIn).addEventListener("click", function () {
       PDFViewerApplication.zoomIn();
     });
 
-    document.getElementById("zoomOut").addEventListener("click", function () {
+    document.querySelector(selectors.zoomOut).addEventListener("click", function () {
       PDFViewerApplication.zoomOut();
     });
 
@@ -481,9 +495,9 @@ const PDFViewerApplication = {
         const page = evt.pageNumber;
         const numPages = PDFViewerApplication.pagesCount;
 
-        document.getElementById("pageNumber").value = page;
-        document.getElementById("previous").disabled = page <= 1;
-        document.getElementById("next").disabled = page >= numPages;
+        document.querySelector(selectors.pageNumber).value = page;
+        document.querySelector(selectors.previous).disabled = page <= 1;
+        document.querySelector(selectors.next).disabled = page >= numPages;
       },
       true
     );
@@ -522,8 +536,8 @@ function enablePinchZoom(pdfViewer) {
         startY = 0;
     let initialPinchDistance = 0;
     let pinchScale = 1;
-    const viewer = document.getElementById("viewer");
-    const container = document.getElementById("viewerContainer");
+    const viewer = document.querySelector(selectors.viewer);
+    const container = document.querySelector(selectors.viewerContainer);
     const reset = () => {
         startX = startY = initialPinchDistance = 0;
         pinchScale = 1;
