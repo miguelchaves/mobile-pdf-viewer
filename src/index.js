@@ -93,6 +93,7 @@ const PDFViewerApplication = {
   pdfLinkService: null,
   eventBus: null,
   l10n: null,
+  pinchZoomEnabled: false,
 
   async init(params) {
     await this.loadLanguages(params.lang);
@@ -501,37 +502,13 @@ const PDFViewerApplication = {
       },
       true
     );
+
+    if (!this.pinchZoomEnabled) {
+      this.pinchZoomEnabled = true;
+      this.enablePinchZoom();
+    }
   },
-};
-
-window.PDFViewerApplication = PDFViewerApplication;
-
-document.addEventListener(
-  "DOMContentLoaded",
-  function () {
-    PDFViewerApplication.initUI();
-  },
-  true
-);
-
-// The offsetParent is not set until the PDF.js iframe or object is visible;
-// waiting for first animation.
-const animationStarted = new Promise(function (resolve) {
-  window.requestAnimationFrame(resolve);
-});
-
-// We need to delay opening until all HTML is loaded.
-animationStarted.then(function () {
-
-  PDFViewerApplication.init({
-    url: params.url || DEFAULT_URL,
-    showDownloadPopup: params.popup !== 'false',
-    lang: params.lang || navigator.language.split('-')[0]
-  });
-});
-
-let pinchZoomEnabled = false;
-function enablePinchZoom(pdfViewer) {
+  enablePinchZoom: function enablePinchZoom() {
     let startX = 0,
         startY = 0;
     let initialPinchDistance = 0;
@@ -599,9 +576,30 @@ function enablePinchZoom(pdfViewer) {
         reset();
     });
 }
-document.addEventListener("DOMContentLoaded", () => {
-    if (!pinchZoomEnabled) {
-        pinchZoomEnabled = true;
-        enablePinchZoom();
-    }
+
+};
+
+window.PDFViewerApplication = PDFViewerApplication;
+
+document.addEventListener(
+  "DOMContentLoaded",
+  function () {
+    PDFViewerApplication.initUI();
+  },
+  true
+);
+
+// The offsetParent is not set until the PDF.js iframe or object is visible;
+// waiting for first animation.
+const animationStarted = new Promise(function (resolve) {
+  window.requestAnimationFrame(resolve);
+});
+
+// We need to delay opening until all HTML is loaded.
+animationStarted.then(function () {
+  PDFViewerApplication.init({
+    url: params.url || DEFAULT_URL,
+    showDownloadPopup: params.popup !== 'false',
+    lang: params.lang || navigator.language.split('-')[0]
+  });
 });
