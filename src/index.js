@@ -423,7 +423,7 @@ const PDFViewerApplication = {
     });
     this.pdfLinkService = linkService;
 
-    const container = document.querSelector(selectors.viewerContainer);
+    const container = document.querySelector(selectors.viewerContainer);
     const pdfViewer = new pdfjsViewer.PDFViewer({
       container,
       eventBus,
