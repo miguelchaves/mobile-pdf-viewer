@@ -558,6 +558,7 @@ function enablePinchZoom(pdfViewer) {
             const originX = startX + container.scrollLeft;
             const originY = startY + container.scrollTop;
             pinchScale = pinchDistance / initialPinchDistance;
+
             viewer.style.transform = `scale(${pinchScale})`;
             viewer.style.transformOrigin = `${originX}px ${originY}px`;
         },
@@ -567,9 +568,15 @@ function enablePinchZoom(pdfViewer) {
         if (initialPinchDistance <= 0) {
             return;
         }
+        let newScale = PDFViewerApplication.pdfViewer.currentScale * pinchScale;
+        if (newScale > MAX_SCALE) {
+          newScale = MAX_SCALE;
+        } else if (newScale < MIN_SCALE) {
+          newScale = MIN_SCALE;
+        }
         viewer.style.transform = `none`;
         viewer.style.transformOrigin = `unset`;
-        PDFViewerApplication.pdfViewer.currentScale *= pinchScale;
+        PDFViewerApplication.pdfViewer.currentScale = newScale;
         const rect = container.getBoundingClientRect();
         const dx = startX - rect.left;
         const dy = startY - rect.top;
