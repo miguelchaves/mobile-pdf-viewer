@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-"use strict";
+'use strict';
 
 if (!window.pdfjsLib?.getDocument || !window.pdfjsViewer?.PDFViewer) {
   // eslint-disable-next-line no-alert
@@ -22,11 +22,11 @@ if (!window.pdfjsLib?.getDocument || !window.pdfjsViewer?.PDFViewer) {
 
 const TEXT_LAYER_MODE = 0; // DISABLE
 const MAX_IMAGE_SIZE = 1024 * 1024;
-const DEFAULT_URL = "assets/pdf-mobile-viewer.pdf";
+const DEFAULT_URL = 'assets/pdf-mobile-viewer.pdf';
 const DEFAULT_SCALE_DELTA = 1.1;
 const MIN_SCALE = 0.25;
 const MAX_SCALE = 10.0;
-const DEFAULT_SCALE_VALUE = "auto";
+const DEFAULT_SCALE_VALUE = 'auto';
 const params = new Proxy(new URLSearchParams(window.location.search), {
   get: (searchParams, prop) => searchParams.get(prop),
 });
@@ -48,7 +48,7 @@ const selectors = {
   pageNumber: '#pageNumber',
 };
 
-window.pdfjsLib.GlobalWorkerOptions.workerSrc = "assets/pdf.worker.min.js";
+window.pdfjsLib.GlobalWorkerOptions.workerSrc = 'assets/pdf.worker.min.js';
 
 class L10n {
   _lang;
@@ -153,40 +153,41 @@ const PDFViewerApplication = {
 
       this.loadingBar.hide();
       this.setTitleUsingMetadata(pdfDocument);
+
+      if (params.iframe) {
+        window.top.postMessage({
+          channel: 'mobile-pdf-viewer',
+          loaded: true,
+          message: 'loaded'
+        });
+      }
     } catch (exception) {
       const message = exception && exception.message;
       const l10n = this.l10n;
-      let loadingErrorMessage;
-
+      let loadingErrorId;
+      
       if (exception instanceof pdfjsLib.InvalidPDFException) {
-        // change error message also for other builds
-        loadingErrorMessage = l10n.get(
-          "invalid_file_error",
-          null,
-          "Invalid or corrupted PDF file."
-        );
+        loadingErrorId = 'invalid_file_error';
       } else if (exception instanceof pdfjsLib.MissingPDFException) {
-        // special message for missing PDFs
-        loadingErrorMessage = l10n.get(
-          "missing_file_error",
-          null,
-          "Missing PDF file."
-        );
+        loadingErrorId = 'missing_file_error';
       } else if (exception instanceof pdfjsLib.UnexpectedResponseException) {
-        loadingErrorMessage = l10n.get(
-          "unexpected_response_error",
-          null,
-          "Unexpected server response."
-        );
+        loadingErrorId = 'unexpected_response_error';
       } else {
-        loadingErrorMessage = l10n.get(
-          "loading_error",
-          null,
-          "An error occurred while loading the PDF."
-        );
+        loadingErrorId = 'loading_error';
+      }
+      
+      const loadingErrorMessage = l10n.get(loadingErrorId);
+      this.error(loadingErrorId, { message });
+
+      if (params.iframe) {
+        window.top.postMessage({
+          channel: 'mobile-pdf-viewer',
+          error: true,
+          messageId: loadingErrorId,
+          message: loadingErrorMessage
+        });
       }
 
-      this.error(loadingErrorMessage, { message });
       this.loadingBar.hide();
     }
   },
@@ -225,7 +226,7 @@ const PDFViewerApplication = {
     const bar = document.querySelector(selectors.loadingBar);
     return pdfjsLib.shadow(
       this,
-      "loadingBar",
+      'loadingBar',
       new pdfjsViewer.ProgressBar(bar)
     );
   },
@@ -251,26 +252,26 @@ const PDFViewerApplication = {
 
     // Provides some basic debug information
     console.log(
-      "PDF " +
+      'PDF ' +
         pdfDocument.fingerprints[0] +
-        " [" +
+        ' [' +
         info.PDFFormatVersion +
-        " " +
-        (info.Producer || "-").trim() +
-        " / " +
-        (info.Creator || "-").trim() +
-        "]" +
-        " (PDF.js: " +
-        (pdfjsLib.version || "-") +
-        ")"
+        ' ' +
+        (info.Producer || '-').trim() +
+        ' / ' +
+        (info.Creator || '-').trim() +
+        ']' +
+        ' (PDF.js: ' +
+        (pdfjsLib.version || '-') +
+        ')'
     );
 
     let pdfTitle;
-    if (metadata && metadata.has("dc:title")) {
-      const title = metadata.get("dc:title");
+    if (metadata && metadata.has('dc:title')) {
+      const title = metadata.get('dc:title');
       // Ghostscript sometimes returns 'Untitled', so prevent setting the
       // title to 'Untitled.
-      if (title !== "Untitled") {
+      if (title !== 'Untitled') {
         pdfTitle = title;
       }
     }
@@ -280,7 +281,7 @@ const PDFViewerApplication = {
     }
 
     if (pdfTitle) {
-      this.setTitle(pdfTitle + " - " + document.title);
+      this.setTitle(pdfTitle + ' - ' + document.title);
     }
   },
 
@@ -292,40 +293,40 @@ const PDFViewerApplication = {
     const l10n = this.l10n;
     const moreInfoText = [
       l10n.get(
-        "error_version_info",
-        { version: pdfjsLib.version || "?", build: pdfjsLib.build || "?" },
-        "PDF.js v{{version}} (build: {{build}})"
+        'error_version_info',
+        { version: pdfjsLib.version || '?', build: pdfjsLib.build || '?' },
+        'PDF.js v{{version}} (build: {{build}})'
       ),
     ];
 
     if (moreInfo) {
       moreInfoText.push(
         l10n.get(
-          "error_message",
+          'error_message',
           { message: moreInfo.message },
-          "Message: {{message}}"
+          'Message: {{message}}'
         )
       );
       if (moreInfo.stack) {
         moreInfoText.push(
-          l10n.get("error_stack", { stack: moreInfo.stack }, "Stack: {{stack}}")
+          l10n.get('error_stack', { stack: moreInfo.stack }, 'Stack: {{stack}}')
         );
       } else {
         if (moreInfo.filename) {
           moreInfoText.push(
             l10n.get(
-              "error_file",
+              'error_file',
               { file: moreInfo.filename },
-              "File: {{file}}"
+              'File: {{file}}'
             )
           );
         }
         if (moreInfo.lineNumber) {
           moreInfoText.push(
             l10n.get(
-              "error_line",
+              'error_line',
               { line: moreInfo.lineNumber },
-              "Line: {{line}}"
+              'Line: {{line}}'
             )
           );
         }
@@ -350,7 +351,7 @@ const PDFViewerApplication = {
       errorMoreInfo.hidden = false;
       moreInfoButton.hidden = true;
       lessInfoButton.hidden = false;
-      errorMoreInfo.style.height = errorMoreInfo.scrollHeight + "px";
+      errorMoreInfo.style.height = errorMoreInfo.scrollHeight + 'px';
     };
     lessInfoButton.onclick = function () {
       errorMoreInfo.hidden = true;
@@ -360,7 +361,7 @@ const PDFViewerApplication = {
     moreInfoButton.hidden = false;
     lessInfoButton.hidden = true;
     const parts = await Promise.all(moreInfoText);
-    errorMoreInfo.value = parts.join("\n");
+    errorMoreInfo.value = parts.join('\n');
   },
 
   progress: function pdfViewProgress(level) {
@@ -441,40 +442,40 @@ const PDFViewerApplication = {
     });
     linkService.setHistory(this.pdfHistory);
 
-    document.querySelector(selectors.previous).addEventListener("click", function () {
+    document.querySelector(selectors.previous).addEventListener('click', function () {
       PDFViewerApplication.page--;
     });
 
-    document.querySelector(selectors.next).addEventListener("click", function () {
+    document.querySelector(selectors.next).addEventListener('click', function () {
       PDFViewerApplication.page++;
     });
 
-    document.querySelector(selectors.zoomIn).addEventListener("click", function () {
+    document.querySelector(selectors.zoomIn).addEventListener('click', function () {
       PDFViewerApplication.zoomIn();
     });
 
-    document.querySelector(selectors.zoomOut).addEventListener("click", function () {
+    document.querySelector(selectors.zoomOut).addEventListener('click', function () {
       PDFViewerApplication.zoomOut();
     });
 
     const downloadButtons = document.querySelectorAll('[data-action="download"]');
-    downloadButtons.forEach(downloadBtn => downloadBtn.addEventListener("click", function () {
+    downloadButtons.forEach(downloadBtn => downloadBtn.addEventListener('click', function () {
       PDFViewerApplication.download();
     }));
 
-    document.querySelector('[data-action="close-popup"]').addEventListener("click", function () {
+    document.querySelector('[data-action="close-popup"]').addEventListener('click', function () {
       PDFViewerApplication.closeDownloadPopup();
     });
 
     document
-      .getElementById("pageNumber")
-      .addEventListener("click", function () {
+      .getElementById('pageNumber')
+      .addEventListener('click', function () {
         this.select();
       });
 
     document
-      .getElementById("pageNumber")
-      .addEventListener("change", function () {
+      .getElementById('pageNumber')
+      .addEventListener('change', function () {
         PDFViewerApplication.page = this.value | 0;
 
         // Ensure that the page number input displays the correct value,
@@ -485,13 +486,13 @@ const PDFViewerApplication = {
         }
       });
 
-    eventBus.on("pagesinit", function () {
+    eventBus.on('pagesinit', function () {
       // We can use pdfViewer now, e.g. let's change default scale.
       pdfViewer.currentScaleValue = DEFAULT_SCALE_VALUE;
     });
 
     eventBus.on(
-      "pagechanging",
+      'pagechanging',
       function (evt) {
         const page = evt.pageNumber;
         const numPages = PDFViewerApplication.pagesCount;
@@ -520,8 +521,8 @@ const PDFViewerApplication = {
         pinchScale = 1;
     };
     // Prevent native iOS page zoom
-    //document.addEventListener("touchmove", (e) => { if (e.scale !== 1) { e.preventDefault(); } }, { passive: false });
-    document.addEventListener("touchstart", (e) => {
+    //document.addEventListener('touchmove', (e) => { if (e.scale !== 1) { e.preventDefault(); } }, { passive: false });
+    document.addEventListener('touchstart', (e) => {
         if (e.touches.length > 1) {
             startX = (e.touches[0].pageX + e.touches[1].pageX) / 2;
             startY = (e.touches[0].pageY + e.touches[1].pageY) / 2;
@@ -534,7 +535,7 @@ const PDFViewerApplication = {
         }
     });
     document.addEventListener(
-        "touchmove",
+        'touchmove',
         (e) => {
             if (initialPinchDistance <= 0 || e.touches.length < 2) {
                 return;
@@ -555,7 +556,7 @@ const PDFViewerApplication = {
         },
         { passive: false }
     );
-    document.addEventListener("touchend", (e) => {
+    document.addEventListener('touchend', (e) => {
         if (initialPinchDistance <= 0) {
             return;
         }
@@ -582,7 +583,7 @@ const PDFViewerApplication = {
 window.PDFViewerApplication = PDFViewerApplication;
 
 document.addEventListener(
-  "DOMContentLoaded",
+  'DOMContentLoaded',
   function () {
     PDFViewerApplication.initUI();
   },
@@ -600,6 +601,7 @@ animationStarted.then(function () {
   PDFViewerApplication.init({
     url: params.url || DEFAULT_URL,
     showDownloadPopup: params.popup !== 'false',
-    lang: params.lang || navigator.language.split('-')[0]
+    lang: params.lang || navigator.language.split('-')[0],
+    iframe: params.iframe === 'true'
   });
 });
